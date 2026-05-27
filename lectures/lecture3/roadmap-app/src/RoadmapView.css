@@ -1,0 +1,235 @@
+.roadmap-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.roadmap-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(--text-secondary);
+  gap: 16px;
+  padding: 40px;
+}
+
+.roadmap-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(139, 92, 246, 0.3);
+  margin-bottom: 8px;
+}
+
+.roadmap-header-section {
+  margin-bottom: 24px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.roadmap-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.roadmap-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.roadmap-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-left: 20px;
+  margin-left: 10px;
+  border-left: 2px dashed rgba(139, 92, 246, 0.2);
+}
+
+.roadmap-step-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 12px;
+  padding: 18px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roadmap-step-card:hover {
+  transform: translateX(4px);
+}
+
+/* ステータスに応じたボーダー色 */
+.roadmap-step-card.todo {
+  border-left: 4px solid var(--text-muted);
+}
+
+.roadmap-step-card.doing {
+  border-left: 4px solid var(--accent-purple);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.05);
+  border-color: rgba(139, 92, 246, 0.4) rgba(139, 92, 246, 0.4) rgba(139, 92, 246, 0.4) var(--accent-purple);
+}
+
+.roadmap-step-card.done {
+  border-left: 4px solid var(--accent-emerald);
+  background: rgba(16, 185, 129, 0.03);
+}
+
+/* タイムライン上のインジケータードット */
+.roadmap-step-dot {
+  position: absolute;
+  left: -31px;
+  top: 22px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--bg-primary);
+  border: 2px solid var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.roadmap-step-card.doing .roadmap-step-dot {
+  border-color: var(--accent-purple);
+  background: var(--accent-purple-glow);
+  box-shadow: 0 0 8px var(--accent-purple);
+}
+
+.roadmap-step-card.done .roadmap-step-dot {
+  border-color: var(--accent-emerald);
+  background: var(--accent-emerald);
+  color: #fff;
+}
+
+.step-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.step-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.step-time-badge {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-muted);
+}
+
+.status-selector {
+  display: flex;
+  background: rgba(10, 14, 26, 0.6);
+  padding: 2px;
+  border-radius: 6px;
+  border: 1px solid var(--border-muted);
+}
+
+.status-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.status-btn:hover {
+  color: var(--text-primary);
+}
+
+.status-btn.active.todo {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.status-btn.active.doing {
+  background: var(--accent-purple);
+  color: #fff;
+}
+
+.status-btn.active.done {
+  background: var(--accent-emerald);
+  color: #fff;
+}
+
+.step-description {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+/* メモ・意図記入エリア */
+.step-notes-section {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 12px;
+}
+
+.step-notes-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--accent-purple);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.step-notes-textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 50px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.step-notes-textarea:focus {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.step-notes-textarea::placeholder {
+  color: var(--text-muted);
+}

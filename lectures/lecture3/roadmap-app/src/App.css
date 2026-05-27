@@ -1,0 +1,124 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 16px;
+  gap: 16px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-muted);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-badge {
+  background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.key-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.key-status-badge:hover {
+  background: rgba(139, 92, 246, 0.05);
+  border-color: var(--accent-purple);
+}
+
+.key-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.key-status-dot.active {
+  background-color: var(--accent-purple);
+  box-shadow: 0 0 8px var(--accent-purple);
+}
+
+.key-status-dot.inactive {
+  background-color: var(--text-muted);
+}
+
+.reset-btn {
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0; /* スクロールが正しく機能するためのハック */
+}
+
+@media (max-width: 900px) {
+  .app-layout {
+    height: auto;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+  }
+  
+  .chat-container, .roadmap-container {
+    height: 600px;
+  }
+}
