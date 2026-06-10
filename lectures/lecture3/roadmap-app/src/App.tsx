@@ -117,6 +117,14 @@ export const App: React.FC = () => {
     });
   };
 
+  const handleReorderSteps = (newSteps: RoadmapStep[]) => {
+    if (!roadmap) return;
+    setRoadmap({
+      ...roadmap,
+      steps: newSteps
+    });
+  };
+
   const handleReset = () => {
     if (window.confirm('すべての会話履歴、ロードマップ、記録した意図メモを削除して初期状態に戻しますか？ (APIキーは保持されます)')) {
       setMessages([WELCOME_MESSAGE]);
@@ -166,6 +174,7 @@ export const App: React.FC = () => {
         <RoadmapView
           roadmap={roadmap}
           onUpdateStep={handleUpdateStep}
+          onReorderSteps={handleReorderSteps}
         />
       </main>
 

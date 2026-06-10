@@ -1,14 +1,19 @@
-import React from 'react';
-import { Check, Clock, FileText, Map } from 'lucide-react';
+import React, { useState } from 'react';
+import { Check, Clock, FileText, Map, ChevronUp, ChevronDown, GripVertical } from 'lucide-react';
 import type { Roadmap, RoadmapStep } from './geminiService';
 import './RoadmapView.css';
 
 interface RoadmapViewProps {
   roadmap: Roadmap | null;
   onUpdateStep: (stepId: string, updates: Partial<RoadmapStep>) => void;
+  onReorderSteps: (newSteps: RoadmapStep[]) => void;
 }
 
-export const RoadmapView: React.FC<RoadmapViewProps> = ({ roadmap, onUpdateStep }) => {
+export const RoadmapView: React.FC<RoadmapViewProps> = ({ roadmap, onUpdateStep, onReorderSteps }) => {
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [isDraggable, setIsDraggable] = useState<boolean>(false);
+
   if (!roadmap) {
     return (
       <div className="roadmap-container glass-panel">
@@ -33,6 +38,63 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({ roadmap, onUpdateStep 
     onUpdateStep(stepId, { notes });
   };
 
+  // ドラッグ＆ドロップロジック
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.setData('text/plain', index.toString());
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = (index: number) => {
+    if (dragOverIndex === index) {
+      setDragOverIndex(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === targetIndex) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const newSteps = [...roadmap.steps];
+    const [movedStep] = newSteps.splice(draggedIndex, 1);
+    newSteps.splice(targetIndex, 0, movedStep);
+    
+    onReorderSteps(newSteps);
+
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setIsDraggable(false);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setIsDraggable(false);
+  };
+
+  // ボタンによる順序入れ替え
+  const handleMoveStep = (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= roadmap.steps.length) return;
+
+    const newSteps = [...roadmap.steps];
+    const temp = newSteps[index];
+    newSteps[index] = newSteps[targetIndex];
+    newSteps[targetIndex] = temp;
+    
+    onReorderSteps(newSteps);
+  };
+
   return (
     <div className="roadmap-container glass-panel animate-fade-in">
       <div className="roadmap-header-section">
@@ -41,14 +103,22 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({ roadmap, onUpdateStep 
       </div>
 
       <div className="roadmap-timeline">
-        {roadmap.steps.map((step) => {
+        {roadmap.steps.map((step, index) => {
           const isDone = step.status === 'done';
           const isDoing = step.status === 'doing';
+          const isDragging = draggedIndex === index;
+          const isOver = dragOverIndex === index;
           
           return (
             <div 
               key={step.id} 
-              className={`roadmap-step-card todo ${step.status}`}
+              className={`roadmap-step-card todo ${step.status} ${isDragging ? 'dragging' : ''} ${isOver ? 'drag-over' : ''}`}
+              draggable={isDraggable}
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={() => handleDragLeave(index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
             >
               <div className="roadmap-step-dot">
                 {isDone ? (
@@ -61,8 +131,42 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({ roadmap, onUpdateStep 
               </div>
 
               <div className="step-card-header">
-                <h4 className="step-title">{step.title}</h4>
+                <div className="step-title-area">
+                  <div 
+                    className="drag-handle"
+                    onMouseEnter={() => setIsDraggable(true)}
+                    onMouseLeave={() => {
+                      if (draggedIndex === null) {
+                        setIsDraggable(false);
+                      }
+                    }}
+                    title="ドラッグして順番を動かす"
+                  >
+                    <GripVertical size={16} />
+                  </div>
+                  <h4 className="step-title">{step.title}</h4>
+                </div>
+                
                 <div className="step-meta">
+                  <div className="reorder-buttons">
+                    <button
+                      className="reorder-btn"
+                      onClick={() => handleMoveStep(index, 'up')}
+                      disabled={index === 0}
+                      title="上に移動"
+                    >
+                      <ChevronUp size={14} />
+                    </button>
+                    <button
+                      className="reorder-btn"
+                      onClick={() => handleMoveStep(index, 'down')}
+                      disabled={index === roadmap.steps.length - 1}
+                      title="下に移動"
+                    >
+                      <ChevronDown size={14} />
+                    </button>
+                  </div>
+
                   <span className="step-time-badge">
                     <Clock size={11} style={{ marginRight: '4px', verticalAlign: 'middle', display: 'inline-block' }} />
                     {step.estimatedTime}
@@ -103,6 +207,7 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({ roadmap, onUpdateStep 
                   value={step.notes}
                   onChange={(e) => handleNotesChange(step.id, e.target.value)}
                   placeholder="なぜこの順序で計画したか、実行時にどんな気づきがあったかなどをメモしておけます..."
+                  onFocus={() => setIsDraggable(false)} // フォーカス時にもドラッグ無効化で安全確保
                 />
               </div>
             </div>

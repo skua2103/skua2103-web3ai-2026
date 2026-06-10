@@ -233,3 +233,90 @@
 .step-notes-textarea::placeholder {
   color: var(--text-muted);
 }
+
+/* タイトルエリアとドラッグハンドル */
+.step-title-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.drag-handle {
+  color: var(--text-muted);
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+}
+
+.roadmap-step-card:hover .drag-handle {
+  opacity: 1;
+}
+
+.drag-handle:hover {
+  color: var(--accent-purple);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* 並び替えボタン */
+.reorder-buttons {
+  display: flex;
+  gap: 4px;
+  margin-right: 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.roadmap-step-card:hover .reorder-buttons {
+  opacity: 1;
+}
+
+.reorder-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-muted);
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.reorder-btn:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.reorder-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: transparent;
+}
+
+/* ドラッグ＆ドロップ時のステートスタイル */
+.roadmap-step-card.dragging {
+  opacity: 0.3;
+  border: 1px dashed var(--accent-purple) !important;
+  background: rgba(139, 92, 246, 0.02);
+  box-shadow: none;
+}
+
+.roadmap-step-card.drag-over {
+  border: 1px dashed var(--accent-purple) !important;
+  background: rgba(139, 92, 246, 0.05);
+  transform: translateX(8px);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+}
+
