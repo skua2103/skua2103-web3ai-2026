@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 24px;
+  padding: 22px;
   overflow-y: auto;
 }
 
@@ -31,31 +31,143 @@
 }
 
 .roadmap-header-section {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   animation: fadeIn 0.4s ease-out;
 }
 
-.roadmap-title {
-  font-size: 22px;
+.roadmap-header-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* v3: エクスポートボタン */
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-muted);
+  border-radius: 7px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.export-btn:hover {
+  background: rgba(139, 92, 246, 0.08);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: var(--accent-purple);
+}
+
+.export-btn.copied {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: var(--accent-emerald);
+}
+
+/* v2: 進捗バー */
+.progress-section {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-muted);
+  border-radius: 10px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.progress-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.progress-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.progress-count {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.progress-percent {
+  color: var(--accent-purple);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.progress-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-emerald));
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* タイトル・説明フィールド */
+.roadmap-title-input {
+  flex: 1;
+  font-size: 20px;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 8px;
-  background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  padding: 2px 4px;
+  font-family: inherit;
+  border-radius: 4px 4px 0 0;
+  transition: border-color 0.2s, background 0.2s;
+  min-width: 0;
 }
 
-.roadmap-description {
-  font-size: 14px;
+.roadmap-title-input:hover { border-bottom-color: rgba(139, 92, 246, 0.3); background: rgba(255, 255, 255, 0.02); }
+.roadmap-title-input:focus { border-bottom-color: var(--accent-purple); background: rgba(139, 92, 246, 0.05); }
+.roadmap-title-input::placeholder { color: var(--text-muted); font-weight: normal; }
+
+.roadmap-description-textarea {
+  font-size: 13.5px;
   color: var(--text-secondary);
   line-height: 1.6;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  padding: 4px;
+  font-family: inherit;
+  min-height: 40px;
+  transition: border-color 0.2s, background 0.2s;
 }
 
+.roadmap-description-textarea:hover { border-color: rgba(139, 92, 246, 0.2); background: rgba(255, 255, 255, 0.01); }
+.roadmap-description-textarea:focus { border-color: rgba(139, 92, 246, 0.4); background: rgba(139, 92, 246, 0.03); }
+.roadmap-description-textarea::placeholder { color: var(--text-muted); }
+
+/* タイムライン */
 .roadmap-timeline {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
   padding-left: 20px;
   margin-left: 10px;
   border-left: 2px dashed rgba(139, 92, 246, 0.2);
@@ -66,35 +178,45 @@
   background: var(--bg-card);
   border: 1px solid var(--border-muted);
   border-radius: 12px;
-  padding: 18px;
+  padding: 16px;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.roadmap-step-card:hover {
-  transform: translateX(4px);
-}
+.roadmap-step-card:hover { transform: translateX(4px); }
 
-/* ステータスに応じたボーダー色 */
-.roadmap-step-card.todo {
-  border-left: 4px solid var(--text-muted);
-}
-
+.roadmap-step-card.todo  { border-left: 4px solid var(--text-muted); }
 .roadmap-step-card.doing {
   border-left: 4px solid var(--accent-purple);
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.05);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.06);
   border-color: rgba(139, 92, 246, 0.4) rgba(139, 92, 246, 0.4) rgba(139, 92, 246, 0.4) var(--accent-purple);
 }
-
 .roadmap-step-card.done {
   border-left: 4px solid var(--accent-emerald);
   background: rgba(16, 185, 129, 0.03);
 }
 
-/* タイムライン上のインジケータードット */
+/* v3: 期限切れ */
+.roadmap-step-card.overdue {
+  border-color: rgba(239, 68, 68, 0.5) rgba(239, 68, 68, 0.2) rgba(239, 68, 68, 0.2) #ef4444;
+  background: rgba(239, 68, 68, 0.02);
+}
+
+/* v4: 完了アニメーション */
+@keyframes stepComplete {
+  0%   { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  40%  { transform: translateX(4px) scale(1.015); box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+  100% { transform: translateX(4px) scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.roadmap-step-card.just-completed {
+  animation: stepComplete 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* タイムラインドット */
 .roadmap-step-dot {
   position: absolute;
   left: -31px;
-  top: 22px;
+  top: 20px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -116,37 +238,75 @@
 .roadmap-step-card.done .roadmap-step-dot {
   border-color: var(--accent-emerald);
   background: var(--accent-emerald);
-  color: #fff;
 }
 
 .step-card-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 10px;
-  gap: 12px;
 }
 
-.step-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
+/* 行1: ドラッグハンドル + タイトル + 削除ボタン */
+.step-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.step-meta {
+/* 行2: 並び替え + 所要時間 + ステータス */
+.step-meta-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  padding-left: 26px; /* drag-handle分のインデント */
+  flex-wrap: wrap;
 }
 
+.step-title-input {
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+  padding: 1px 4px;
+  font-family: inherit;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.step-title-input:hover { border-bottom-color: rgba(139, 92, 246, 0.3); }
+.step-title-input:focus { border-bottom-color: var(--accent-purple); background: rgba(139, 92, 246, 0.05); }
+.step-title-input::placeholder { color: var(--text-muted); font-weight: normal; }
+
 .step-time-badge {
+  display: inline-flex;
+  align-items: center;
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
   padding: 2px 8px;
   border-radius: 4px;
   border: 1px solid var(--border-muted);
+  cursor: text;
+  transition: border-color 0.2s;
 }
+
+.step-time-badge:hover { border-color: rgba(139, 92, 246, 0.4); }
+
+.step-time-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  width: 60px;
+}
+
+.step-time-input::placeholder { color: var(--text-muted); }
 
 .status-selector {
   display: flex;
@@ -160,51 +320,111 @@
   background: none;
   border: none;
   color: var(--text-muted);
-  padding: 4px 8px;
+  padding: 3px 7px;
   font-size: 11px;
   font-weight: 500;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: inherit;
 }
 
-.status-btn:hover {
-  color: var(--text-primary);
+.status-btn:hover { color: var(--text-primary); }
+.status-btn.active.todo  { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.status-btn.active.doing { background: var(--accent-purple); color: #fff; }
+.status-btn.active.done  { background: var(--accent-emerald); color: #fff; }
+
+.step-delete-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  flex-shrink: 0;
+  transition: all 0.2s;
 }
 
-.status-btn.active.todo {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-}
+.roadmap-step-card:hover .step-delete-btn { opacity: 1; }
+.step-title-row:hover .step-delete-btn { opacity: 1; }
+.step-delete-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
 
-.status-btn.active.doing {
-  background: var(--accent-purple);
-  color: #fff;
-}
-
-.status-btn.active.done {
-  background: var(--accent-emerald);
-  color: #fff;
-}
-
-.step-description {
-  font-size: 13.5px;
+.step-description-textarea {
+  font-size: 13px;
   color: var(--text-secondary);
-  line-height: 1.5;
-  margin-bottom: 14px;
+  line-height: 1.55;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  outline: none;
+  width: 100%;
+  resize: vertical;
+  padding: 4px 6px;
+  font-family: inherit;
+  min-height: 58px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-/* メモ・意図記入エリア */
+.step-description-textarea:hover { border-color: rgba(139, 92, 246, 0.2); background: rgba(0,0,0,0.1); }
+.step-description-textarea:focus { border-color: rgba(139, 92, 246, 0.4); background: rgba(0,0,0,0.2); }
+.step-description-textarea::placeholder { color: var(--text-muted); }
+
+/* v3: 期限日ピッカー */
+.step-deadline-section {
+  margin-bottom: 10px;
+}
+
+.step-deadline-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  transition: all 0.2s;
+}
+
+.step-deadline-label:hover {
+  border-color: rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.04);
+  color: var(--text-secondary);
+}
+
+.step-deadline-label.overdue {
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.step-deadline-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  color-scheme: dark;
+}
+
+/* メモセクション */
 .step-notes-section {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 12px;
+  padding-top: 10px;
 }
 
 .step-notes-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--accent-purple);
   margin-bottom: 6px;
   font-weight: 500;
@@ -212,76 +432,52 @@
 
 .step-notes-textarea {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: 6px;
   padding: 8px 10px;
   color: var(--text-primary);
   font-size: 12px;
   font-family: inherit;
   resize: vertical;
-  min-height: 50px;
+  min-height: 48px;
   outline: none;
   transition: all 0.2s;
 }
 
-.step-notes-textarea:focus {
-  border-color: rgba(139, 92, 246, 0.4);
-  background: rgba(0, 0, 0, 0.3);
-}
+.step-notes-textarea:focus { border-color: rgba(139, 92, 246, 0.4); background: rgba(0,0,0,0.3); }
+.step-notes-textarea::placeholder { color: var(--text-muted); }
 
-.step-notes-textarea::placeholder {
-  color: var(--text-muted);
-}
-
-/* タイトルエリアとドラッグハンドル */
-.step-title-area {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-}
-
+/* ドラッグハンドル */
 .drag-handle {
   color: var(--text-muted);
   cursor: grab;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  padding: 3px;
   border-radius: 4px;
-  transition: all 0.2s ease;
-  opacity: 0.5;
+  transition: all 0.2s;
+  opacity: 0.45;
+  flex-shrink: 0;
 }
 
-.roadmap-step-card:hover .drag-handle {
-  opacity: 1;
-}
-
-.drag-handle:hover {
-  color: var(--accent-purple);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.drag-handle:active {
-  cursor: grabbing;
-}
+.roadmap-step-card:hover .drag-handle { opacity: 1; }
+.drag-handle:hover { color: var(--accent-purple); background: rgba(255,255,255,0.05); }
+.drag-handle:active { cursor: grabbing; }
 
 /* 並び替えボタン */
 .reorder-buttons {
   display: flex;
-  gap: 4px;
-  margin-right: 8px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
+  gap: 3px;
+  opacity: 0.55;
+  transition: opacity 0.2s;
 }
 
-.roadmap-step-card:hover .reorder-buttons {
-  opacity: 1;
-}
+.roadmap-step-card:hover .reorder-buttons { opacity: 1; }
 
 .reorder-btn {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255,255,255,0.02);
   border: 1px solid var(--border-muted);
   color: var(--text-muted);
   padding: 4px;
@@ -290,33 +486,48 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.2s;
 }
 
-.reorder-btn:hover:not(:disabled) {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
+.reorder-btn:hover:not(:disabled) { color: #fff; background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+.reorder-btn:disabled { opacity: 0.25; cursor: not-allowed; border-color: transparent; }
 
-.reorder-btn:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  border-color: transparent;
-}
-
-/* ドラッグ＆ドロップ時のステートスタイル */
+/* ドラッグ状態 */
 .roadmap-step-card.dragging {
-  opacity: 0.3;
+  opacity: 0.28;
   border: 1px dashed var(--accent-purple) !important;
-  background: rgba(139, 92, 246, 0.02);
+  background: rgba(139,92,246,0.02);
   box-shadow: none;
 }
 
 .roadmap-step-card.drag-over {
   border: 1px dashed var(--accent-purple) !important;
-  background: rgba(139, 92, 246, 0.05);
+  background: rgba(139,92,246,0.05);
   transform: translateX(8px);
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.15);
+  box-shadow: 0 0 15px rgba(139,92,246,0.15);
 }
 
+/* ステップ追加ボタン */
+.add-step-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: rgba(139,92,246,0.05);
+  border: 1px dashed rgba(139,92,246,0.3);
+  border-radius: 8px;
+  color: rgba(139,92,246,0.7);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 6px;
+  transition: all 0.2s;
+}
+
+.add-step-btn:hover {
+  background: rgba(139,92,246,0.1);
+  border-color: rgba(139,92,246,0.5);
+  color: var(--accent-purple);
+}

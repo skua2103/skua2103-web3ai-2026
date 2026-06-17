@@ -2,21 +2,22 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  max-width: 1600px;
+  max-width: 1700px;
   margin: 0 auto;
-  padding: 16px;
-  gap: 16px;
+  padding: 14px;
+  gap: 14px;
 }
 
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
+  padding: 11px 22px;
   background: var(--bg-card);
   border: 1px solid var(--border-muted);
   border-radius: 14px;
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .logo-section {
@@ -27,25 +28,45 @@
 
 .logo-badge {
   background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
-  padding: 8px;
+  padding: 7px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 14px rgba(139, 92, 246, 0.3);
 }
 
 .logo-text {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #fff;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+/* v4: ストリークバッジ */
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 5px 11px;
+  border-radius: 20px;
+  animation: streakPulse 3s ease-in-out infinite;
+}
+
+@keyframes streakPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.25); }
 }
 
 .key-status-badge {
@@ -53,7 +74,7 @@
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-muted);
@@ -67,14 +88,14 @@
 }
 
 .key-status-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
 }
 
 .key-status-dot.active {
   background-color: var(--accent-purple);
-  box-shadow: 0 0 8px var(--accent-purple);
+  box-shadow: 0 0 7px var(--accent-purple);
 }
 
 .key-status-dot.inactive {
@@ -85,11 +106,12 @@
   background: transparent;
   border: 1px solid var(--border-muted);
   color: var(--text-secondary);
-  padding: 6px 12px;
+  padding: 5px 11px;
   border-radius: 8px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: inherit;
 }
 
 .reset-btn:hover {
@@ -98,27 +120,58 @@
   color: #ef4444;
 }
 
+/* v3: 3カラムレイアウト（サイドバー + チャット + ロードマップ） */
 .main-content {
   display: grid;
-  grid-template-columns: 380px 1fr;
-  gap: 16px;
+  grid-template-columns: 210px 370px 1fr;
+  gap: 14px;
   flex: 1;
-  min-height: 0; /* スクロールが正しく機能するためのハック */
+  min-height: 0;
 }
 
-@media (max-width: 900px) {
+/* タブレット: サイドバーを上部に */
+@media (max-width: 1100px) {
+  .main-content {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  /* サイドバーを上段全幅に */
+  .main-content > aside {
+    grid-column: 1 / -1;
+    height: 130px;
+  }
+}
+
+/* モバイル: 1カラム縦積み */
+@media (max-width: 700px) {
   .app-layout {
     height: auto;
     min-height: 100vh;
+    padding: 10px;
   }
-  
+
   .main-content {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
     height: auto;
-    min-height: 0;
   }
-  
-  .chat-container, .roadmap-container {
+
+  .main-content > aside {
+    grid-column: unset;
+    height: 130px;
+  }
+
+  .chat-container,
+  .roadmap-container {
     height: 600px;
+  }
+
+  .logo-text {
+    display: none;
+  }
+
+  .streak-badge span {
+    display: none;
   }
 }

@@ -1,0 +1,213 @@
+.checkin-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 7, 16, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1002;
+}
+
+.checkin-modal {
+  width: 90%;
+  max-width: 440px;
+  padding: 28px;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  box-shadow:
+    0 20px 40px -5px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(245, 158, 11, 0.06);
+  position: relative;
+}
+
+.checkin-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.checkin-close-btn:hover {
+  color: var(--text-primary);
+}
+
+.checkin-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.checkin-sun-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  animation: sunPulse 3s ease-in-out infinite;
+}
+
+@keyframes sunPulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
+  50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.4); }
+}
+
+.checkin-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.checkin-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+}
+
+.checkin-streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.checkin-section {
+  margin-bottom: 18px;
+}
+
+.checkin-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.9px;
+  margin-bottom: 8px;
+}
+
+.checkin-step-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 13px;
+  border-radius: 8px;
+  margin-bottom: 7px;
+  border: 1px solid var(--border-muted);
+  background: rgba(255, 255, 255, 0.02);
+  gap: 10px;
+}
+
+.checkin-step-item.doing {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.04);
+}
+
+.checkin-step-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.checkin-step-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+.checkin-step-roadmap {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.checkin-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 11px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  border: none;
+  flex-shrink: 0;
+  font-family: inherit;
+}
+
+.checkin-action-btn.done {
+  background: var(--accent-emerald);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.checkin-action-btn.done:hover {
+  background: #0ea371;
+  transform: translateY(-1px);
+}
+
+.checkin-action-btn.start {
+  background: rgba(139, 92, 246, 0.85);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+}
+
+.checkin-action-btn.start:hover {
+  background: var(--accent-purple);
+  transform: translateY(-1px);
+}
+
+.checkin-all-done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.checkin-later-btn {
+  display: block;
+  width: 100%;
+  padding: 11px;
+  background: transparent;
+  border: 1px solid var(--border-muted);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkin-later-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
