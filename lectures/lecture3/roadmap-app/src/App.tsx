@@ -5,7 +5,7 @@ import { RoadmapView } from './RoadmapView';
 import { ApiKeySettings } from './ApiKeySettings';
 import { Sidebar } from './Sidebar';
 import { CheckInModal } from './CheckInModal';
-import { generateRoadmapFromAI, chatWithAI, type Roadmap, type RoadmapStep } from './geminiService';
+import { generateRoadmapFromAI, chatWithAI, breakdownStep, type Roadmap, type RoadmapStep } from './geminiService';
 import './App.css';
 
 const WELCOME_MESSAGE: Message = {
@@ -25,6 +25,7 @@ export const App: React.FC = () => {
   const [isCheckInOpen, setIsCheckInOpen] = useState(false); // v4
   const [justCompletedStepId, setJustCompletedStepId] = useState<string | null>(null); // v4
   const [streak, setStreak] = useState(0); // v4
+  const [freezingStepId, setFreezingStepId] = useState<string | null>(null); // v6
   const initialLoadDone = useRef(false);
 
   const activeRoadmap = roadmaps.find(r => r.id === activeRoadmapId) ?? null;
@@ -321,6 +322,38 @@ export const App: React.FC = () => {
     }
   };
 
+  // v6: フリーズ解消インジェクター
+  const handleFreezeBreak = async (stepId: string) => {
+    if (!activeRoadmapId || !activeRoadmap) return;
+    const step = activeRoadmap.steps.find(s => s.id === stepId);
+    if (!step) return;
+
+    setFreezingStepId(stepId);
+    try {
+      const microTasks = await breakdownStep(step, apiKey);
+
+      setRoadmaps(prev => prev.map(rm => {
+        if (rm.id !== activeRoadmapId) return rm;
+        const idx = rm.steps.findIndex(s => s.id === stepId);
+        const newSteps = [...rm.steps];
+        newSteps.splice(idx + 1, 0, ...microTasks);
+        return { ...rm, steps: newSteps };
+      }));
+
+      const chatMsg: Message = {
+        id: `msg-${Date.now()}-freeze`,
+        sender: 'assistant',
+        text: `「${step.title}」を ${microTasks.length} つの極小ステップに分解しました！\n\nロードマップに⚡マイクロタスクを追加したので、一番上から順番にこなすだけでOKです。まず最初の1つ（${microTasks[0]?.estimatedTime ?? '10分'}）だけやってみましょう。`,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, chatMsg]);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setFreezingStepId(null);
+    }
+  };
+
   const handleReset = () => {
     if (window.confirm('すべてのロードマップと会話履歴を削除して初期状態に戻しますか？\n（APIキーとストリークは保持されます）')) {
       setMessages([WELCOME_MESSAGE]);
@@ -388,7 +421,7 @@ export const App: React.FC = () => {
           onAddNewRoadmap={handleAddNewRoadmap}
         />
 
-        {/* v2: 進捗バー・v3: 期限・エクスポート・v4: 完了アニメーション */}
+        {/* v2: 進捗バー・v3: 期限・エクスポート・v4: 完了アニメーション・v6: フリーズ解消 */}
         <RoadmapView
           roadmap={activeRoadmap}
           onUpdateStep={handleUpdateStep}
@@ -397,6 +430,8 @@ export const App: React.FC = () => {
           onAddStep={handleAddStep}
           onDeleteStep={handleDeleteStep}
           justCompletedStepId={justCompletedStepId}
+          onFreezeBreak={handleFreezeBreak}
+          freezingStepId={freezingStepId}
         />
       </main>
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Clock, FileText, Map, ChevronUp, ChevronDown, GripVertical, Trash2, Plus, Copy, CheckCheck, Calendar, AlertCircle } from 'lucide-react';
+import { Check, Clock, FileText, Map, ChevronUp, ChevronDown, GripVertical, Trash2, Plus, Copy, CheckCheck, Calendar, AlertCircle, Zap, Loader2 } from 'lucide-react';
 import type { Roadmap, RoadmapStep } from './geminiService';
 import './RoadmapView.css';
 
@@ -11,11 +11,14 @@ interface RoadmapViewProps {
   onAddStep: (afterIndex?: number) => void;
   onDeleteStep: (stepId: string) => void;
   justCompletedStepId: string | null; // v4: 完了アニメーション
+  onFreezeBreak: (stepId: string) => void; // v6: フリーズ解消
+  freezingStepId: string | null;           // v6: 分解中のステップID
 }
 
 export const RoadmapView: React.FC<RoadmapViewProps> = ({
   roadmap, onUpdateStep, onReorderSteps, onUpdateRoadmap,
-  onAddStep, onDeleteStep, justCompletedStepId
+  onAddStep, onDeleteStep, justCompletedStepId,
+  onFreezeBreak, freezingStepId
 }) => {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -196,6 +199,9 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
           // v3: 期限チェック
           const isOverdue = step.deadline && step.status !== 'done'
             && new Date(step.deadline + 'T23:59:59') < new Date();
+          // v6: マイクロタスク判定
+          const isMicro = !!step.isMicroTask;
+          const isFreezing = freezingStepId === step.id;
 
           return (
             <div
@@ -206,7 +212,8 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
                 isDragging ? 'dragging' : '',
                 isOver ? 'drag-over' : '',
                 isJustCompleted ? 'just-completed' : '',
-                isOverdue ? 'overdue' : ''
+                isOverdue ? 'overdue' : '',
+                isMicro ? 'micro-task' : ''
               ].filter(Boolean).join(' ')}
               draggable={isDraggable}
               onDragStart={e => handleDragStart(e, index)}
@@ -236,6 +243,13 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
                   >
                     <GripVertical size={16} />
                   </div>
+                  {/* v6: マイクロタスクバッジ */}
+                  {isMicro && (
+                    <span className="micro-task-badge">
+                      <Zap size={10} />
+                      今すぐ
+                    </span>
+                  )}
                   <input
                     className="step-title-input"
                     value={step.title}
@@ -340,6 +354,21 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
                   onFocus={() => setIsDraggable(false)}
                 />
               </div>
+
+              {/* v6: フリーズ解消ボタン（完了ステップとマイクロタスク自身には非表示） */}
+              {!isMicro && step.status !== 'done' && (
+                <button
+                  className={`freeze-btn ${isFreezing ? 'loading' : ''}`}
+                  onClick={() => onFreezeBreak(step.id)}
+                  disabled={isFreezing || freezingStepId !== null}
+                  title="このステップで手が止まったときに押す"
+                >
+                  {isFreezing
+                    ? <><Loader2 size={12} className="spin" /> 分解中...</>
+                    : <><Zap size={12} /> 止まった！小さく分解する</>
+                  }
+                </button>
+              )}
             </div>
           );
         })}

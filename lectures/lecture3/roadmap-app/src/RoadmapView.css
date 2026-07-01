@@ -507,6 +507,81 @@
   box-shadow: 0 0 15px rgba(139,92,246,0.15);
 }
 
+/* v6: マイクロタスク */
+.roadmap-step-card.micro-task {
+  border-left: 4px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.03);
+  margin-left: 14px;
+  animation: microSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.roadmap-step-card.micro-task .roadmap-step-dot {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+}
+
+@keyframes microSlideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.micro-task-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* v6: 止まった！ボタン */
+.freeze-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 5px 12px;
+  background: rgba(245, 158, 11, 0.06);
+  border: 1px dashed rgba(245, 158, 11, 0.35);
+  border-radius: 7px;
+  color: rgba(245, 158, 11, 0.85);
+  font-size: 11px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.freeze-btn:hover:not(:disabled) {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.6);
+  color: #f59e0b;
+}
+
+.freeze-btn.loading {
+  opacity: 1;
+  cursor: not-allowed;
+  color: rgba(245, 158, 11, 0.6);
+}
+
+.freeze-btn:disabled {
+  cursor: not-allowed;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
 /* ステップ追加ボタン */
 .add-step-btn {
   display: flex;

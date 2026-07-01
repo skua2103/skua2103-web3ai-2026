@@ -7,8 +7,10 @@ export interface RoadmapStep {
   estimatedTime: string;
   status: 'todo' | 'doing' | 'done';
   notes: string;
-  deadline?: string;    // v3: "YYYY-MM-DD"
-  completedAt?: string; // v4: ISO datetime when marked done
+  deadline?: string;      // v3: "YYYY-MM-DD"
+  completedAt?: string;   // v4: ISO datetime when marked done
+  isMicroTask?: boolean;  // v6: フリーズ解消で生成されたマイクロタスク
+  parentStepId?: string;  // v6: 分解元のステップID
 }
 
 export interface Roadmap {
@@ -191,6 +193,78 @@ export async function chatWithAI(
   } catch (error) {
     console.error('Chat API error:', error);
     return getMockChatResponse(userMessage, currentRoadmap);
+  }
+}
+
+// v6: フリーズ解消インジェクター - ステップを極小マイクロタスクに分解
+export async function breakdownStep(
+  step: RoadmapStep,
+  apiKey: string | null
+): Promise<RoadmapStep[]> {
+  const makeMicro = (items: { title: string; time: string }[]): RoadmapStep[] =>
+    items.map((item, i) => ({
+      id: `micro-${Date.now()}-${i}`,
+      title: item.title,
+      description: `「${step.title}」の分解ステップです。これだけに集中してください。`,
+      estimatedTime: item.time,
+      status: 'todo',
+      notes: '',
+      isMicroTask: true,
+      parentStepId: step.id
+    }));
+
+  if (!apiKey || apiKey.trim() === '') {
+    await new Promise(r => setTimeout(r, 1000));
+    return makeMicro([
+      { title: `まず「${step.title}」を検索して概要だけ読む`, time: '10分' },
+      { title: '最小の動くサンプルを1つだけコピーして動かす', time: '15分' },
+      { title: '1箇所だけ自分で変えてみて挙動を確認する', time: '10分' }
+    ]);
+  }
+
+  try {
+    const ai = new GoogleGenerativeAI(apiKey);
+    const model = ai.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      generationConfig: { responseMimeType: 'application/json' }
+    });
+
+    const prompt = `あなたは学習支援の専門家です。
+ユーザーが以下のステップで手が止まっています。このステップを「今すぐ5〜15分でできる」極小アクション3〜4つに分解してください。
+
+止まっているステップ:
+タイトル: 「${step.title}」
+説明: 「${step.description}」
+
+以下のJSONスキーマで出力してください。純粋なJSONのみ返してください。
+{
+  "microTasks": [
+    { "title": "今すぐできる極小アクション（動詞で始める）", "estimatedTime": "10分" }
+  ]
+}
+
+条件:
+- 3〜4個に分解
+- 各タスクは5〜20分以内で完結
+- 「調べる」「試す」「確認する」など具体的な動詞で始める
+- ハードルを下げることを最優先`;
+
+    const result = await model.generateContent(prompt);
+    const data = JSON.parse(result.response.text()) as {
+      microTasks: { title: string; estimatedTime: string }[];
+    };
+
+    return makeMicro(data.microTasks.slice(0, 4).map(t => ({
+      title: t.title || 'マイクロタスク',
+      time: t.estimatedTime || '10分'
+    })));
+  } catch (error) {
+    console.error('Breakdown API error, using fallback:', error);
+    return makeMicro([
+      { title: `まず「${step.title}」を検索して概要だけ読む`, time: '10分' },
+      { title: '最小の動くサンプルを1つだけコピーして動かす', time: '15分' },
+      { title: '1箇所だけ自分で変えてみて挙動を確認する', time: '10分' }
+    ]);
   }
 }
 
